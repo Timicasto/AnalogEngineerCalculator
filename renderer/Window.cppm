@@ -114,6 +114,10 @@ public:
 		glfwFocusWindow(window);
 	}
 
+	[[nodiscard]] glm::mat4 getProjection() const {
+		return projection;
+	}
+
 private:
 	GLFWwindow *window{};
 	glm::mat4 projection{};

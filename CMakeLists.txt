@@ -5,6 +5,7 @@ set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD
         CACHE STRING "" FORCE)
 
 set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_C_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_MODULE_STD 1)
 
@@ -14,8 +15,9 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules")
 
 find_package(glfw3 REQUIRED)
 find_package(OpenGL REQUIRED)
+find_package(Freetype REQUIRED)
 
-include_directories(includes)
+include_directories(includes ${FREETYPE_INCLUDE_DIRS})
 
 add_library(Logger)
 target_sources(Logger PUBLIC
@@ -28,8 +30,10 @@ target_sources(RendererModule PUBLIC
 FILE_SET CXX_MODULES FILES
         renderer/Window.cppm
         renderer/Renderer.cppm
+        renderer/FontRenderer.cppm
+        renderer/Shader.cppm
 )
-target_link_libraries(RendererModule PUBLIC Logger GL glfw)
+target_link_libraries(RendererModule PUBLIC Logger GL glfw ${FREETYPE_LIBRARIES})
 
 
 add_executable(AnalogEngineerCalculator main.cpp glad.c
@@ -39,8 +43,10 @@ target_link_libraries(AnalogEngineerCalculator RendererModule)
 
 target_compile_options(AnalogEngineerCalculator PRIVATE
         -fmodules
+        -freport-bug
         -Og
+        --embed-dir=./resources
         -fno-omit-frame-pointer
         -march=native)
 
-
+configure_file(resources/MapleMono-CN-SemiBold.ttf MapleMono-CN-SemiBold.ttf COPYONLY)
